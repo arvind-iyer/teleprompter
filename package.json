@@ -24,7 +24,33 @@
 				"command": "teleprompter.start",
 				"title": "Start teleprompter"
 			}
-		]
+		],
+		"configuration": {
+			"type": "object",
+			"title": "Teleprompter Config",
+			"properties": {
+				"teleprompter.shortDelayMin": {
+					"type": "number",
+					"scope": "resource",
+					"default": 50
+				},
+				"teleprompter.shortDelayMax": {
+					"type": "number",
+					"scope": "resource",
+					"default": 100
+				},
+				"teleprompter.longDelayMin": {
+					"type": "number",
+					"scope": "resource",
+					"default": 100
+				},
+				"teleprompter.longDelayMax": {
+					"type": "number",
+					"scope": "resource",
+					"default": 250
+				}
+			}
+		}
 	},
 	"scripts": {
 		"vscode:prepublish": "yarn run compile",
@@ -32,16 +58,20 @@
 		"watch": "tsc -watch -p ./",
 		"pretest": "yarn run compile && yarn run lint",
 		"lint": "eslint src --ext ts",
-		"test": "node ./out/test/runTest.js"
+		"test": "node ./out/test/runTest.js",
+		"esbuild-base": "esbuild ./src/extension.ts --bundle --outfile=out/main.js --external:vscode --format=cjs --platform=node",
+		"esbuild": "npm run esbuild-base -- --sourcemap",
+		"esbuild-watch": "npm run esbuild-base -- --sourcemap --watch"
 	},
 	"devDependencies": {
-		"@types/vscode": "^1.53.0",
 		"@types/glob": "^7.1.3",
 		"@types/mocha": "^8.0.4",
 		"@types/node": "^12.11.7",
-		"eslint": "^7.19.0",
+		"@types/vscode": "^1.53.0",
 		"@typescript-eslint/eslint-plugin": "^4.14.1",
 		"@typescript-eslint/parser": "^4.14.1",
+		"esbuild": "^0.13.14",
+		"eslint": "^7.19.0",
 		"glob": "^7.1.6",
 		"mocha": "^8.2.1",
 		"typescript": "^4.1.3",

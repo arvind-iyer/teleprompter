@@ -1,14 +1,14 @@
 import * as vscode from 'vscode';
-
+const settings = vscode.workspace.getConfiguration('teleprompter'); 
 
 class Teleprompter {
 	//TODO: this only works when using tabs for indentation
-	skip = ['\t'];
+	skip = ['\t', '\n'];
 	//TODO: make these configurable
-	shortDelayMin = 10;
-	shortDelayMax = 80;
-	longDelayMin = 100;
-	longDelayMax = 180;
+	shortDelayMin = settings.shortDelayMin || 10;
+	shortDelayMax = settings.shortDelayMax || 80;
+	longDelayMin = settings.longDelayMin || 100;
+	longDelayMax = settings.longDelayMax || 180;
 
 	text: string;
 
@@ -47,10 +47,10 @@ export function activate(context: vscode.ExtensionContext) {
 	let disposable = vscode.commands.registerCommand('teleprompter.start', async () => {
 		const editor = vscode.window.activeTextEditor;
 		if (!editor) return;
-		const text = editor.document.getText(editor.selection);
+		// const text = editor.document.getText(editor.selection);
+		const text = await vscode.env.clipboard.readText();
 
 		const next = new Teleprompter(text).run();
-
 		let char;
 		while (char = await next()) {
 			// simulate key presses
